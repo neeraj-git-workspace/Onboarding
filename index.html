@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Partner Resource Onboarding | malomatia Digital Services</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #B91C1C;
+    --red-dark: #7F1D1D;
+    --red-light: #FEE2E2;
+    --red-mid: #DC2626;
+    --ink: #1a1a1a;
+    --muted: #6B7280;
+    --surface: #F9F5F4;
+    --white: #ffffff;
+    --border: #E5E0DF;
+    --accent: #C4A882;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--surface);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ── */
+  .layout { display: flex; min-height: 100vh; }
+
+  .sidebar {
+    width: 260px;
+    background: var(--ink);
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    top: 0; left: 0;
+    z-index: 100;
+    overflow-y: auto;
+  }
+
+  .sidebar-brand {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .brand-logo {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+  }
+  .brand-logo .logo-icon {
+    width: 32px; height: 32px; background: var(--red); border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif; font-size: 16px; color: white; font-weight: 700;
+  }
+  .brand-name { font-size: 15px; font-weight: 600; letter-spacing: 0.01em; }
+  .brand-sub { font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 0.06em; text-transform: uppercase; }
+
+  .doc-badge {
+    margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .doc-badge span {
+    font-size: 10px; padding: 3px 8px; border-radius: 20px;
+    background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5);
+    letter-spacing: 0.04em;
+  }
+
+  .nav { padding: 16px 0; flex: 1; }
+  .nav-label {
+    font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(255,255,255,0.3); padding: 8px 24px 4px; font-weight: 500;
+  }
+  .nav a {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 24px; text-decoration: none;
+    color: rgba(255,255,255,0.55); font-size: 13.5px; font-weight: 400;
+    transition: all 0.18s; border-left: 2px solid transparent;
+    cursor: pointer;
+  }
+  .nav a:hover, .nav a.active {
+    color: white; background: rgba(255,255,255,0.05); border-left-color: var(--red);
+  }
+  .nav a .nav-icon { font-size: 15px; opacity: 0.7; width: 18px; text-align: center; }
+
+  .sidebar-footer {
+    padding: 16px 24px; border-top: 1px solid rgba(255,255,255,0.08);
+    font-size: 11px; color: rgba(255,255,255,0.25);
+  }
+
+  /* ── MAIN ── */
+  .main { margin-left: 260px; flex: 1; }
+
+  .topbar {
+    background: white; border-bottom: 1px solid var(--border);
+    padding: 0 40px; height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 50;
+  }
+  .topbar-title { font-size: 14px; font-weight: 500; color: var(--muted); }
+  .topbar-title span { color: var(--ink); font-weight: 600; }
+  .status-chip {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--red-light); color: var(--red-dark);
+    padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;
+  }
+  .status-chip::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--red); }
+
+  /* ── SECTIONS ── */
+  .section { display: none; padding: 36px 40px 60px; }
+  .section.active { display: block; }
+
+  .section-header { margin-bottom: 32px; }
+  .section-eyebrow {
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--red); font-weight: 500; margin-bottom: 6px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700;
+    color: var(--ink); line-height: 1.2; margin-bottom: 10px;
+  }
+  .section-desc { font-size: 14.5px; color: var(--muted); max-width: 620px; line-height: 1.7; }
+
+  /* ── OVERVIEW CARDS ── */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px; }
+
+  .card {
+    background: white; border-radius: 12px; padding: 22px 24px;
+    border: 1px solid var(--border); transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); transform: translateY(-2px); }
+
+  .card-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--red-light); color: var(--red);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; margin-bottom: 14px;
+  }
+  .card-label { font-size: 12px; color: var(--muted); margin-bottom: 4px; font-weight: 500; }
+  .card-value { font-size: 22px; font-weight: 600; color: var(--ink); }
+  .card-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  /* ── OVERVIEW PANELS ── */
+  .panel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+
+  .panel {
+    background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden;
+  }
+  .panel.full { grid-column: 1/-1; }
+
+  .panel-head {
+    padding: 18px 24px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .panel-head h3 { font-size: 14px; font-weight: 600; color: var(--ink); }
+  .panel-head .ph-icon { font-size: 16px; }
+  .panel-body { padding: 20px 24px; }
+
+  /* Scope List */
+  .scope-list { list-style: none; }
+  .scope-list li {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 13.5px;
+  }
+  .scope-list li:last-child { border-bottom: none; }
+  .scope-list li::before {
+    content: '✓'; color: var(--red); font-weight: 700;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .oos-list li::before { content: '✕'; color: #9CA3AF; }
+
+  /* Policy requirements */
+  .req-item {
+    display: flex; gap: 16px; padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .req-item:last-child { border-bottom: none; }
+  .req-num {
+    width: 28px; height: 28px; border-radius: 6px;
+    background: var(--red); color: white;
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .req-text { font-size: 13.5px; color: var(--ink); line-height: 1.6; }
+  .req-text strong { display: block; font-weight: 600; margin-bottom: 2px; color: var(--ink); }
+
+  /* ── PROCEDURE STEPS ── */
+  .role-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+  .role-tab {
+    padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 500;
+    border: 1px solid var(--border); background: white; color: var(--muted);
+    cursor: pointer; transition: all 0.18s;
+  }
+  .role-tab:hover { border-color: var(--red); color: var(--red); }
+  .role-tab.active { background: var(--red); color: white; border-color: var(--red); }
+
+  .role-content { display: none; }
+  .role-content.active { display: block; }
+
+  .role-card {
+    background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden;
+  }
+  .role-header {
+    background: linear-gradient(135deg, var(--red-dark), var(--red));
+    padding: 24px 28px; color: white;
+  }
+  .role-header h3 { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+  .role-header p { font-size: 13px; opacity: 0.8; }
+
+  .steps-list { padding: 8px 0; }
+  .step-item {
+    display: flex; gap: 16px; padding: 16px 28px;
+    border-bottom: 1px solid var(--border); align-items: flex-start;
+    transition: background 0.15s;
+  }
+  .step-item:last-child { border-bottom: none; }
+  .step-item:hover { background: #FAFAFA; }
+  .step-num {
+    width: 26px; height: 26px; border-radius: 50%;
+    border: 2px solid var(--red-light); color: var(--red);
+    font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .step-text { font-size: 13.5px; line-height: 1.65; color: var(--ink); }
+  .step-tag {
+    display: inline-block; font-size: 10px; padding: 2px 7px;
+    border-radius: 4px; background: var(--red-light); color: var(--red);
+    font-weight: 600; margin-left: 6px; vertical-align: middle; letter-spacing: 0.04em;
+  }
+
+  /* sub-detail list inside step */
+  .step-sublist { margin-top: 8px; padding-left: 4px; }
+  .step-sublist li {
+    font-size: 12.5px; color: var(--muted); padding: 2px 0; list-style: none;
+    display: flex; gap: 6px;
+  }
+  .step-sublist li::before { content: '—'; color: var(--accent); flex-shrink: 0; }
+
+  /* ── RACI TABLE ── */
+  .raci-wrap { overflow-x: auto; }
+  .raci-table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 700px; }
+  .raci-table th {
+    background: var(--ink); color: white;
+    padding: 12px 14px; text-align: center; font-weight: 600; font-size: 12px;
+  }
+  .raci-table th:first-child { text-align: left; }
+  .raci-table td {
+    padding: 12px 14px; border-bottom: 1px solid var(--border);
+    text-align: center; vertical-align: middle;
+  }
+  .raci-table td:first-child { text-align: left; font-weight: 500; font-size: 13px; }
+  .raci-table tr:hover td { background: #FDF8F8; }
+  .raci-table tr:last-child td { border-bottom: none; }
+
+  .badge-r { display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;background:var(--red);color:white;font-weight:700;font-size:12px; }
+  .badge-a { display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;background:var(--ink);color:white;font-weight:700;font-size:12px; }
+  .badge-c { display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;background:#DBEAFE;color:#1D4ED8;font-weight:700;font-size:12px; }
+  .badge-i { display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;background:#F3F4F6;color:#6B7280;font-weight:700;font-size:12px; }
+
+  .sla-chip {
+    display: inline-block; padding: 3px 10px; border-radius: 20px;
+    background: #F0FDF4; color: #15803D; font-size: 11px; font-weight: 600;
+    border: 1px solid #BBF7D0;
+  }
+  .sla-chip.urgent { background: #FFF7ED; color: #C2410C; border-color: #FED7AA; }
+
+  /* ── EXCEPTION / GOVERNANCE ── */
+  .exc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .exc-card {
+    border: 1px solid var(--border); border-radius: 10px;
+    overflow: hidden; background: white;
+  }
+  .exc-card-head {
+    padding: 12px 18px; background: var(--red-light); border-bottom: 1px solid #FCA5A5;
+  }
+  .exc-card-head h4 { font-size: 13px; font-weight: 600; color: var(--red-dark); }
+  .exc-card-body { padding: 14px 18px; font-size: 13.5px; line-height: 1.6; color: var(--ink); }
+
+  .risk-table { width: 100%; border-collapse: collapse; }
+  .risk-table th { background: #F3F4F6; padding: 10px 16px; text-align: left; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .risk-table td { padding: 13px 16px; border-bottom: 1px solid var(--border); font-size: 13.5px; vertical-align: top; }
+  .risk-table tr:last-child td { border-bottom: none; }
+  .risk-cat { font-weight: 600; color: var(--ink); }
+  .risk-badge {
+    display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+    background: var(--red); margin-right: 6px; vertical-align: middle;
+  }
+
+  /* ── ESCALATION ── */
+  .esc-levels { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  .esc-card {
+    border-radius: 12px; padding: 20px; border: 1px solid var(--border);
+    background: white; position: relative; overflow: hidden;
+  }
+  .esc-card::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 4px;
+  }
+  .esc-card.l1::before { background: #22C55E; }
+  .esc-card.l2::before { background: #F59E0B; }
+  .esc-card.l3::before { background: #F97316; }
+  .esc-card.l4::before { background: var(--red); }
+  .esc-level-num { font-size: 11px; font-weight: 700; color: var(--muted); margin-bottom: 4px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .esc-level-title { font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 10px; }
+  .esc-level-body { font-size: 13px; color: var(--muted); line-height: 1.65; }
+  .esc-trigger {
+    display: inline-block; font-size: 11px; padding: 3px 9px;
+    border-radius: 4px; font-weight: 600; margin-bottom: 8px;
+  }
+  .l1 .esc-trigger { background: #DCFCE7; color: #15803D; }
+  .l2 .esc-trigger { background: #FEF9C3; color: #A16207; }
+  .l3 .esc-trigger { background: #FFEDD5; color: #C2410C; }
+  .l4 .esc-trigger { background: var(--red-light); color: var(--red-dark); }
+
+  .triggers-panel { background: white; border-radius: 12px; border: 1px solid var(--border); padding: 22px 28px; margin-bottom: 24px; }
+  .triggers-panel h3 { font-size: 14px; font-weight: 600; margin-bottom: 14px; }
+  .trigger-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .trigger-pill {
+    display: flex; align-items: center; gap: 7px;
+    background: var(--red-light); color: var(--red-dark);
+    padding: 7px 13px; border-radius: 8px; font-size: 13px;
+  }
+  .trigger-pill::before { content: '⚡'; font-size: 12px; }
+
+  /* ── LEGEND ── */
+  .legend { display: flex; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .sidebar { width: 220px; }
+    .main { margin-left: 220px; }
+    .panel-grid, .exc-grid, .esc-levels { grid-template-columns: 1fr; }
+    .section { padding: 24px 20px 48px; }
+    .topbar { padding: 0 20px; }
+  }
+  @media (max-width: 640px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+  }
+
+  /* Animate sections in */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .section.active > * { animation: fadeUp 0.35s ease both; }
+  .section.active > *:nth-child(2) { animation-delay: 0.05s; }
+  .section.active > *:nth-child(3) { animation-delay: 0.1s; }
+  .section.active > *:nth-child(4) { animation-delay: 0.15s; }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">
+      <div class="logo-icon">m</div>
+      <div>
+        <div class="brand-name">malomatia</div>
+        <div class="brand-sub">Digital Services</div>
+      </div>
+    </div>
+    <div class="doc-badge">
+      <span>v0.1</span>
+      <span>Feb 2026</span>
+      <span>Draft</span>
+    </div>
+  </div>
+
+  <nav class="nav">
+    <div class="nav-label">Navigation</div>
+    <a href="#" class="active" data-section="overview" onclick="show('overview',this)">
+      <span class="nav-icon">🏠</span> Overview
+    </a>
+    <a href="#" data-section="scope" onclick="show('scope',this)">
+      <span class="nav-icon">🎯</span> Scope & Policy
+    </a>
+    <a href="#" data-section="procedures" onclick="show('procedures',this)">
+      <span class="nav-icon">📋</span> Team Procedures
+    </a>
+    <a href="#" data-section="raci" onclick="show('raci',this)">
+      <span class="nav-icon">⚙️</span> RACI & SLAs
+    </a>
+    <a href="#" data-section="exceptions" onclick="show('exceptions',this)">
+      <span class="nav-icon">⚠️</span> Exceptions & Risks
+    </a>
+    <a href="#" data-section="escalation" onclick="show('escalation',this)">
+      <span class="nav-icon">🔺</span> Escalation Process
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    Doc No: mal-DS-PP-PROP-01<br>Internal | All Rights Reserved
+  </div>
+</aside>
+
+<!-- ── MAIN CONTENT ── -->
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-title">Partner Resource <span>Onboarding Portal</span></div>
+    <div class="status-chip">Draft v0.1 · 22 Feb 2026</div>
+  </div>
+
+  <!-- ===== OVERVIEW ===== -->
+  <section class="section active" id="overview">
+    <div class="section-header">
+      <div class="section-eyebrow">Digital Services</div>
+      <h1 class="section-title">Partner Resource<br>Onboarding Policy</h1>
+      <p class="section-desc">A controlled, time-bound process for onboarding partner resources following Purchase Request (PR) approval — ensuring operational readiness, data accuracy, governance compliance, and audit traceability.</p>
+    </div>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-icon">👥</div>
+        <div class="card-label">Teams Involved</div>
+        <div class="card-value">7</div>
+        <div class="card-sub">PR, Logistics, IT, RMG, EPMO, PM, DU Lead</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">⚡</div>
+        <div class="card-label">Initiation SLA</div>
+        <div class="card-value">Same Day</div>
+        <div class="card-sub">After PR budget approval</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">📅</div>
+        <div class="card-label">Clarity Setup</div>
+        <div class="card-value">≤ 2 Days</div>
+        <div class="card-sub">From Date of Joining</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🛡️</div>
+        <div class="card-label">Risks Mitigated</div>
+        <div class="card-value">7</div>
+        <div class="card-sub">Governance & operational risks</div>
+      </div>
+    </div>
+
+    <div class="panel-grid">
+      <div class="panel">
+        <div class="panel-head">
+          <span class="ph-icon">🔑</span>
+          <h3>Key Onboarding Triggers</h3>
+        </div>
+        <div class="panel-body">
+          <ul class="scope-list">
+            <li>PR budget approval received</li>
+            <li>PR details received from CIS Team</li>
+            <li>Same-day initiation required by PR Team</li>
+            <li>All inductions complete before DOJ</li>
+            <li>Tasks created within 1 working day of account creation</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <span class="ph-icon">📦</span>
+          <h3>Minimum Onboarding Activities</h3>
+        </div>
+        <div class="panel-body">
+          <ul class="scope-list">
+            <li>New joiner onboarding request</li>
+            <li>Clarity account creation</li>
+            <li>Hardware &amp; IT account provisioning</li>
+            <li>RMG onboarding request</li>
+            <li>PM &amp; Resource Manager induction coordination</li>
+            <li>Resource Database, PR &amp; Induction tracker updates</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel full">
+        <div class="panel-head">
+          <span class="ph-icon">🗺️</span>
+          <h3>Onboarding Journey at a Glance</h3>
+        </div>
+        <div class="panel-body" style="overflow-x:auto;">
+          <div style="display:flex;align-items:flex-start;gap:0;min-width:640px;padding:8px 0;">
+            <!-- Timeline steps -->
+            <div style="flex:1;text-align:center;">
+              <div style="width:44px;height:44px;border-radius:50%;background:var(--red);color:white;display:flex;align-items:center;justify-content:center;font-size:18px;margin:0 auto 10px;">✔</div>
+              <div style="font-size:12px;font-weight:600;margin-bottom:4px;">PR Approved</div>
+              <div style="font-size:11px;color:var(--muted);">Same day</div>
+            </div>
+            <div style="flex:0;padding-top:22px;color:#D1D5DB;font-size:20px;margin:0 4px;">→</div>
+            <div style="flex:1;text-align:center;">
+              <div style="width:44px;height:44px;border-radius:50%;background:#B45309;color:white;display:flex;align-items:center;justify-content:center;font-size:18px;margin:0 auto 10px;">🖥</div>
+              <div style="font-size:12px;font-weight:600;margin-bottom:4px;">IT Provisioned</div>
+              <div style="font-size:11px;color:var(--muted);">Before DOJ</div>
+            </div>
+            <div style="flex:0;padding-top:22px;color:#D1D5DB;font-size:20px;margin:0 4px;">→</div>
+            <div style="flex:1;text-align:center;">
+              <div style="width:44px;height:44px;border-radius:50%;background:#0369A1;color:white;display:flex;align-items:center;justify-content:center;font-size:18px;margin:0 auto 10px;">🏢</div>
+              <div style="font-size:12px;font-weight:600;margin-bottom:4px;">RMG Setup</div>
+              <div style="font-size:11px;color:var(--muted);">Same day</div>
+            </div>
+            <div style="flex:0;padding-top:22px;color:#D1D5DB;font-size:20px;margin:0 4px;">→</div>
+            <div style="flex:1;text-align:center;">
+              <div style="width:44px;height:44px;border-radius:50%;background:#7C3AED;color:white;display:flex;align-items:center;justify-content:center;font-size:18px;margin:0 auto 10px;">📚</div>
+              <div style="font-size:12px;font-weight:600;margin-bottom:4px;">Induction</div>
+              <div style="font-size:11px;color:var(--muted);">Before DOJ</div>
+            </div>
+            <div style="flex:0;padding-top:22px;color:#D1D5DB;font-size:20px;margin:0 4px;">→</div>
+            <div style="flex:1;text-align:center;">
+              <div style="width:44px;height:44px;border-radius:50%;background:#15803D;color:white;display:flex;align-items:center;justify-content:center;font-size:18px;margin:0 auto 10px;">🚀</div>
+              <div style="font-size:12px;font-weight:600;margin-bottom:4px;">Day 1 Ready</div>
+              <div style="font-size:11px;color:var(--muted);">On DOJ</div>
+            </div>
+            <div style="flex:0;padding-top:22px;color:#D1D5DB;font-size:20px;margin:0 4px;">→</div>
+            <div style="flex:1;text-align:center;">
+              <div style="width:44px;height:44px;border-radius:50%;background:#0F766E;color:white;display:flex;align-items:center;justify-content:center;font-size:18px;margin:0 auto 10px;">📊</div>
+              <div style="font-size:12px;font-weight:600;margin-bottom:4px;">Clarity Active</div>
+              <div style="font-size:11px;color:var(--muted);">≤2 days post DOJ</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SCOPE & POLICY ===== -->
+  <section class="section" id="scope">
+    <div class="section-header">
+      <div class="section-eyebrow">Section 2–4</div>
+      <h1 class="section-title">Scope & Policy Requirements</h1>
+      <p class="section-desc">What this policy covers, what it excludes, and the mandatory requirements that must be fulfilled.</p>
+    </div>
+
+    <div class="panel-grid">
+      <div class="panel">
+        <div class="panel-head"><span class="ph-icon">✅</span><h3>In Scope</h3></div>
+        <div class="panel-body">
+          <ul class="scope-list">
+            <li>All partner resources onboarded via Purchase Request (PR)</li>
+            <li>PR Team activities post-budget approval</li>
+            <li>Logistics Team – ORF &amp; RMG submissions</li>
+            <li>IT Team – Hardware &amp; system access provisioning</li>
+            <li>RMG – Resource allocation &amp; Clarity setup</li>
+            <li>Project Managers – Deployment coordination</li>
+            <li>Resource Managers (DU/PU Lead) – Oversight</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><span class="ph-icon">❌</span><h3>Out of Scope</h3></div>
+        <div class="panel-body">
+          <ul class="scope-list oos-list">
+            <li>Agreement covering Code of Conduct</li>
+            <li>Email creation</li>
+            <li>Asset allocation</li>
+            <li>ID Card issuance</li>
+            <li>Biometrics</li>
+            <li>Workstation allocation</li>
+            <li>Post-onboarding procedures</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel full">
+        <div class="panel-head"><span class="ph-icon">📜</span><h3>Policy Requirements</h3></div>
+        <div class="panel-body">
+          <div class="req-item">
+            <div class="req-num">4.1</div>
+            <div class="req-text">
+              <strong>Same-Day Initiation</strong>
+              The PR Team shall initiate onboarding activities on the same working day of PR budget approval or receipt of PR details from the CIS Team.
+            </div>
+          </div>
+          <div class="req-item">
+            <div class="req-num">4.2</div>
+            <div class="req-text">
+              <strong>Minimum Onboarding Checklist</strong>
+              Initiation must include: new joiner request, Clarity account, hardware &amp; IT account, RMG request, PM &amp; Resource Manager induction coordination, Resource Database, PR tracker, and Induction Tracker updates.
+            </div>
+          </div>
+          <div class="req-item">
+            <div class="req-num">4.3</div>
+            <div class="req-text">
+              <strong>Complete ORF Submission</strong>
+              Logistics Team shall submit complete ORF and allocation details to RMG, extracted from the CIF or approved PR documentation. PMs consulted only for discrepancies.
+            </div>
+          </div>
+          <div class="req-item">
+            <div class="req-num">4.4</div>
+            <div class="req-text">
+              <strong>Task Creation within 1 Working Day</strong>
+              Tasks must be created within 1 working day of account creation. For urgent onboarding, tasks must be created the same day.
+            </div>
+          </div>
+          <div class="req-item">
+            <div class="req-num">4.5</div>
+            <div class="req-text">
+              <strong>Induction Before DOJ</strong>
+              All induction activities must be completed on or before the resource's joining date to ensure operational readiness and compliance.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROCEDURES ===== -->
+  <section class="section" id="procedures">
+    <div class="section-header">
+      <div class="section-eyebrow">Section 5</div>
+      <h1 class="section-title">Team Procedures</h1>
+      <p class="section-desc">Step-by-step responsibilities for each team involved in the onboarding process. Select a team below to view their tasks.</p>
+    </div>
+
+    <div class="role-tabs">
+      <button class="role-tab active" onclick="showRole('pr',this)">PR Team</button>
+      <button class="role-tab" onclick="showRole('logistics',this)">Logistics Team</button>
+      <button class="role-tab" onclick="showRole('it',this)">IT Team</button>
+      <button class="role-tab" onclick="showRole('gensvcs',this)">General Services</button>
+      <button class="role-tab" onclick="showRole('epmo',this)">EPMO / PMO</button>
+      <button class="role-tab" onclick="showRole('pm',this)">Project Manager</button>
+      <button class="role-tab" onclick="showRole('rm',this)">Resource Manager</button>
+    </div>
+
+    <!-- PR Team -->
+    <div class="role-content active" id="rc-pr">
+      <div class="role-card">
+        <div class="role-header">
+          <h3>🗂 PR Team</h3>
+          <p>Initiates and coordinates all onboarding activities upon PR approval or CIS receipt</p>
+        </div>
+        <div class="steps-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text">Submit TAMM request for hardware provisioning, IT account, and required system access (VPN, jump server, etc.) <span class="step-tag">TAMM</span></div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text">Share resource details with SBU Operations to update the Resource Database.</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text">Provide resource details to Logistics Team to initiate RMG account setup.</div></div>
+          <div class="step-item"><div class="step-num">4</div><div class="step-text">Coordinate with Logistics Team to ensure required induction activities are arranged for new joiners.</div></div>
+          <div class="step-item"><div class="step-num">5</div><div class="step-text">Ensure the NDA is issued to the resource on the same working day where required by the IT Team. <span class="step-tag">Same Day</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logistics -->
+    <div class="role-content" id="rc-logistics">
+      <div class="role-card">
+        <div class="role-header">
+          <h3>🚚 Logistics Team</h3>
+          <p>Manages RMG setup, induction coordination, tracker updates, and Day-1 readiness</p>
+        </div>
+        <div class="steps-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text">Submit complete RMG request and ensure resource setup is completed in Clarity.</div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text">Extract and provide required resource deployment details from the approved CIF. Contact PM only when information is missing or unclear.
+            <ul class="step-sublist">
+              <li>Resource Name, Delivery Unit Name, Project Name &amp; Code</li>
+              <li>ORF Role Name, Start/End Date, Line Code, Allocation %</li>
+            </ul>
+          </div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text">Send the welcome email in the pre-defined format once the IT account is activated.</div></div>
+          <div class="step-item"><div class="step-num">4</div><div class="step-text">Coordinate the induction process with IT, RMG, PM, and Resource Manager.</div></div>
+          <div class="step-item"><div class="step-num">5</div><div class="step-text">Confirm tasks are assigned to the resource to enable work commencement and timesheet recording.</div></div>
+          <div class="step-item"><div class="step-num">6</div><div class="step-text">Update the Induction Tracker to reflect onboarding status and completion.</div></div>
+          <div class="step-item"><div class="step-num">7</div><div class="step-text">Coordinate with Resource Manager to confirm approval for Udemy access and request from L&D team.</div></div>
+          <div class="step-item"><div class="step-num">8</div><div class="step-text">Raise a workstation request based on Resource Manager's requirements.</div></div>
+          <div class="step-item"><div class="step-num">9</div><div class="step-text">Confirm Day-1 readiness with the resource and escalate any access or setup issues promptly. <span class="step-tag">Day 1</span></div></div>
+          <div class="step-item"><div class="step-num">10</div><div class="step-text">Maintain visibility of pending onboarding items and ensure closure within defined timelines.</div></div>
+          <div class="step-item"><div class="step-num">11</div><div class="step-text">Provide briefing to new joiners on timesheet submission: timelines, approval workflow, and compliance expectations.</div></div>
+          <div class="step-item"><div class="step-num">12</div><div class="step-text">Inform Resource Manager and update trackers upon notification of delays, cancellations, or deployment changes.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- IT Team -->
+    <div class="role-content" id="rc-it">
+      <div class="role-card">
+        <div class="role-header">
+          <h3>💻 IT Team</h3>
+          <p>Responsible for hardware, access provisioning, and biometric activation</p>
+        </div>
+        <div class="steps-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text">Provision and issue laptop and required IT assets/accessories as part of IT induction, prior to the resource's joining date where applicable. <span class="step-tag">Before DOJ</span></div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text">Activate the resource's domain access and create the official email ID before the resource commences work at the client site.</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text">Activate biometric access on the day of joining, or the first day the resource reports physically to the office (for virtual onboarding). <span class="step-tag">Day 1</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- General Services -->
+    <div class="role-content" id="rc-gensvcs">
+      <div class="role-card">
+        <div class="role-header">
+          <h3>🏢 General Services</h3>
+          <p>Handles workspace allocation and access support items</p>
+        </div>
+        <div class="steps-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text">Allocate appropriate workspace for the new hire prior to or on the day of joining. <span class="step-tag">Before DOJ</span></div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text">Issue required office access and support items — ID card (temporary/permanent), parking sticker (if applicable), essential stationery — within 2 working days of joining. <span class="step-tag">≤ 2 Days</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EPMO -->
+    <div class="role-content" id="rc-epmo">
+      <div class="role-card">
+        <div class="role-header">
+          <h3>📊 EPMO / PMO</h3>
+          <p>Manages Clarity access, timesheet setup, and first-month compliance monitoring</p>
+        </div>
+        <div class="steps-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text">Activate Clarity access for new hires within 2 working days from DOJ (Delivery Team resources only). <span class="step-tag">≤ 2 Days</span></div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text">Assign the relevant project and reporting manager in Clarity to enable task allocation and timesheet approvals.</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text">Share Clarity usage guidelines and timesheet submission procedures with the new joiner within 2 working days.</div></div>
+          <div class="step-item"><div class="step-num">4</div><div class="step-text">Provide initial support to the new joiner for timesheet submission and resolve access or task allocation issues promptly.</div></div>
+          <div class="step-item"><div class="step-num">5</div><div class="step-text">Monitor timesheet submission compliance during the first month of onboarding and follow up on non-submissions. <span class="step-tag">Month 1</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project Manager -->
+    <div class="role-content" id="rc-pm">
+      <div class="role-card">
+        <div class="role-header">
+          <h3>📁 Project Manager</h3>
+          <p>Confirms deployment details, ensures Clarity setup, and briefs the resource on Day 1</p>
+        </div>
+        <div class="steps-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text">Confirm resource deployment details in line with the approved CIF, project plan, and ORF.</div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text">Provide any missing or clarifying deployment details requested by Logistics or RMG in a timely manner.</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text">Ensure resource is allocated in <strong>Clarity</strong> with the correct project, role, and allocation percentage.</div></div>
+          <div class="step-item"><div class="step-num">4</div><div class="step-text">Ensure project tasks are created and assigned in Clarity for work commencement and timesheet recording.</div></div>
+          <div class="step-item"><div class="step-num">5</div><div class="step-text">Brief the resource on project context, immediate responsibilities, reporting structure, and priorities on or before Day 1. <span class="step-tag">Day 1</span></div></div>
+          <div class="step-item"><div class="step-num">6</div><div class="step-text">Notify RMG and Logistics promptly if onboarding is delayed, cancelled, or deployment details change.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resource Manager -->
+    <div class="role-content" id="rc-rm">
+      <div class="role-card">
+        <div class="role-header">
+          <h3>👔 Resource Manager (DU/PU Lead)</h3>
+          <p>Validates alignment, approves allocation, and supports deployment readiness</p>
+        </div>
+        <div class="steps-list">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text">Confirm resource deployment requirements in alignment with the approved CIF and delivery plan.</div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text">Validate role alignment, allocation percentage, and deployment duration prior to onboarding.</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text">Review and approve the resource allocation request submitted to RMG.</div></div>
+          <div class="step-item"><div class="step-num">4</div><div class="step-text">Confirm workstation, access, or any special setup requirements to Logistics, where applicable.</div></div>
+          <div class="step-item"><div class="step-num">5</div><div class="step-text">Approve training, certifications, and tool access required for the resource to perform responsibilities.</div></div>
+          <div class="step-item"><div class="step-num">6</div><div class="step-text">Support resolution of onboarding readiness issues that may impact deployment timelines.</div></div>
+          <div class="step-item"><div class="step-num">7</div><div class="step-text">Manage allocation and utilization upon notification of delays, cancellations, or deployment changes.</div></div>
+          <div class="step-item"><div class="step-num">8</div><div class="step-text">Provide overview of DU/PU structure including reporting lines, key contacts, and escalation pathways relevant to the resource's role.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== RACI ===== -->
+  <section class="section" id="raci">
+    <div class="section-header">
+      <div class="section-eyebrow">Section 6</div>
+      <h1 class="section-title">RACI Matrix & SLAs</h1>
+      <p class="section-desc">Responsibility assignment matrix with service level timelines for every key onboarding activity.</p>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="badge-r">R</span> Responsible – Does the work</div>
+      <div class="legend-item"><span class="badge-a">A</span> Accountable – Owns the outcome</div>
+      <div class="legend-item"><span class="badge-c">C</span> Consulted – Provides input</div>
+      <div class="legend-item"><span class="badge-i">I</span> Informed – Kept in the loop</div>
+    </div>
+
+    <div class="panel full">
+      <div class="panel-body" style="padding:0;">
+        <div class="raci-wrap">
+          <table class="raci-table">
+            <thead>
+              <tr>
+                <th style="width:22%;">Key Activity</th>
+                <th>PR Team</th>
+                <th>Logistics</th>
+                <th>IT / Admin</th>
+                <th>RMG / EPMO</th>
+                <th>Project Mgr</th>
+                <th>DU/PU Lead</th>
+                <th>SLA</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Initiate onboarding after PR approval</td>
+                <td><span class="badge-r">R</span></td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-a">A</span></td>
+                <td><span class="sla-chip urgent">Same day</span></td>
+              </tr>
+              <tr>
+                <td>Submit IT, RMG request &amp; deployment details</td>
+                <td><span class="badge-r">R</span></td>
+                <td><span class="badge-r">R</span></td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-c">C</span></td>
+                <td><span class="badge-a">A</span></td>
+                <td><span class="sla-chip urgent">Same day</span></td>
+              </tr>
+              <tr>
+                <td>Provision system access &amp; workspace</td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-c">C</span></td>
+                <td><span class="badge-r">R</span></td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-a">A</span></td>
+                <td><span class="sla-chip">Before DOJ</span></td>
+              </tr>
+              <tr>
+                <td>Clarity access &amp; setup</td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-r">R</span></td>
+                <td><span class="badge-c">C</span></td>
+                <td><span class="badge-a">A</span></td>
+                <td><span class="sla-chip">≤2 days from DOJ</span></td>
+              </tr>
+              <tr>
+                <td>Resource allocation &amp; task readiness</td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-r">R</span></td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-c">C</span></td>
+                <td><span class="badge-r">R</span></td>
+                <td><span class="badge-a">A</span></td>
+                <td><span class="sla-chip">Before DOJ</span></td>
+              </tr>
+              <tr>
+                <td>Induction coordination &amp; readiness</td>
+                <td><span class="badge-c">C</span></td>
+                <td><span class="badge-r">R</span></td>
+                <td><span class="badge-c">C</span></td>
+                <td><span class="badge-c">C</span></td>
+                <td><span class="badge-c">C</span></td>
+                <td><span class="badge-a">A</span></td>
+                <td><span class="sla-chip">Before DOJ</span></td>
+              </tr>
+              <tr>
+                <td>Day-1 operational readiness</td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-r">R</span></td>
+                <td><span class="badge-c">C</span></td>
+                <td><span class="badge-c">C</span></td>
+                <td><span class="badge-c">C</span></td>
+                <td><span class="badge-a">A</span></td>
+                <td><span class="sla-chip urgent">On DOJ</span></td>
+              </tr>
+              <tr>
+                <td>Manage onboarding changes</td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-r">R</span></td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-r">R</span></td>
+                <td><span class="badge-a">A</span></td>
+                <td><span class="sla-chip urgent">Immediate</span></td>
+              </tr>
+              <tr>
+                <td>Tracker updates &amp; status visibility</td>
+                <td><span class="badge-c">C</span></td>
+                <td><span class="badge-r">R</span></td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-a">A</span></td>
+                <td><span class="sla-chip urgent">Same day</span></td>
+              </tr>
+              <tr>
+                <td>First-month timesheet readiness</td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-i">I</span></td>
+                <td><span class="badge-r">R</span></td>
+                <td><span class="badge-r">R</span></td>
+                <td><span class="badge-a">A</span></td>
+                <td><span class="sla-chip">First month</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== EXCEPTIONS ===== -->
+  <section class="section" id="exceptions">
+    <div class="section-header">
+      <div class="section-eyebrow">Sections 7–9</div>
+      <h1 class="section-title">Exceptions, Risks & Non-Compliance</h1>
+      <p class="section-desc">How to handle exceptions, what governance risks this policy mitigates, and consequences of non-compliance.</p>
+    </div>
+
+    <div style="margin-bottom:24px;">
+      <div class="panel-head" style="padding:0 0 12px;"><span class="ph-icon">⚡</span><h3 style="font-size:16px;">Exception Scenarios</h3></div>
+      <div class="exc-grid">
+        <div class="exc-card">
+          <div class="exc-card-head"><h4>🚨 Urgent Onboarding Required</h4></div>
+          <div class="exc-card-body">Expedited approval granted. All compliance steps completed retrospectively within defined timelines.</div>
+        </div>
+        <div class="exc-card">
+          <div class="exc-card-head"><h4>📊 Clarity / Task Allocation Delay</h4></div>
+          <div class="exc-card-body">PMO and PM must resolve within <strong>1 working day</strong> of Date of Joining.</div>
+        </div>
+        <div class="exc-card">
+          <div class="exc-card-head"><h4>💻 IT Provisioning Delay</h4></div>
+          <div class="exc-card-body">Logistics Team to escalate <strong>immediately</strong> to IT Management.</div>
+        </div>
+        <div class="exc-card">
+          <div class="exc-card-head"><h4>📄 Incomplete Onboarding Documentation</h4></div>
+          <div class="exc-card-body">Must be regularized within <strong>2 working days</strong>.</div>
+        </div>
+        <div class="exc-card" style="grid-column:1/-1;">
+          <div class="exc-card-head"><h4>⚖️ Compliance / Billing / Audit Impact</h4></div>
+          <div class="exc-card-body">Escalate immediately to relevant BU Heads &amp; SBU GRC.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel full" style="margin-bottom:24px;">
+      <div class="panel-head"><span class="ph-icon">🛡️</span><h3>Governance Risks Mitigated</h3></div>
+      <div class="panel-body" style="padding:0;">
+        <table class="risk-table">
+          <thead><tr><th>Risk Category</th><th>Risk Description</th></tr></thead>
+          <tbody>
+            <tr><td class="risk-cat"><span class="risk-badge"></span>Timesheet Gaps</td><td>Resources unable to submit timesheets due to missing access or tasks.</td></tr>
+            <tr><td class="risk-cat"><span class="risk-badge"></span>Payroll / Billing Delays</td><td>System readiness gaps delaying payroll processing and client billing.</td></tr>
+            <tr><td class="risk-cat"><span class="risk-badge"></span>Incorrect Cost Allocation</td><td>Missing Clarity setup leads to misallocated project costs.</td></tr>
+            <tr><td class="risk-cat"><span class="risk-badge"></span>Compliance Breaches</td><td>Incomplete onboarding controls trigger regulatory or policy violations.</td></tr>
+            <tr><td class="risk-cat"><span class="risk-badge"></span>Audit Findings</td><td>Missing approvals, documentation, or traceability identified in audits.</td></tr>
+            <tr><td class="risk-cat"><span class="risk-badge"></span>Resource Idle Time</td><td>Day-1 readiness failures causing unproductive resource time.</td></tr>
+            <tr><td class="risk-cat"><span class="risk-badge"></span>Data Inaccuracies</td><td>Errors in resource tracking and financial reporting.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel full">
+      <div class="panel-head"><span class="ph-icon">🚫</span><h3>Non-Compliance Definition</h3></div>
+      <div class="panel-body">
+        <p style="font-size:13.5px;color:var(--muted);margin-bottom:16px;">Failure to adhere to this policy may result in operational disruption, financial impact, or compliance exposure. Non-compliance includes:</p>
+        <ul class="scope-list oos-list">
+          <li>Delayed onboarding initiation after PR approval</li>
+          <li>Failure to provide system access or tasks within defined timelines</li>
+          <li>Incomplete onboarding documentation or tracker updates</li>
+          <li>Resource deployment without Clarity setup or allocation</li>
+          <li>Failure to complete induction requirements</li>
+          <li>Delays in communicating onboarding changes</li>
+        </ul>
+        <div style="margin-top:16px;padding:14px 18px;background:var(--red-light);border-radius:8px;border-left:3px solid var(--red);font-size:13.5px;color:var(--red-dark);">
+          <strong>⚠️ Repeated or material non-compliance</strong> may be escalated to SBU leadership and relevant governance functions for corrective action.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ESCALATION ===== -->
+  <section class="section" id="escalation">
+    <div class="section-header">
+      <div class="section-eyebrow">Section 10</div>
+      <h1 class="section-title">Escalation & Corrective Action</h1>
+      <p class="section-desc">A four-level escalation framework to address onboarding delays, process deviations, and governance risks.</p>
+    </div>
+
+    <div class="triggers-panel">
+      <h3>⚡ Escalation Triggers</h3>
+      <div class="trigger-list">
+        <div class="trigger-pill">SLA timelines not met</div>
+        <div class="trigger-pill">Day-1 readiness at risk</div>
+        <div class="trigger-pill">System access not completed</div>
+        <div class="trigger-pill">Incomplete documentation</div>
+        <div class="trigger-pill">Cross-functional dependency delays</div>
+        <div class="trigger-pill">Repeated non-compliance</div>
+      </div>
+    </div>
+
+    <div class="esc-levels">
+      <div class="esc-card l1">
+        <div class="esc-level-num">Level 1</div>
+        <div class="esc-trigger">Immediate Issue</div>
+        <div class="esc-level-title">Operational Resolution</div>
+        <div class="esc-level-body">The responsible team attempts immediate resolution upon identifying the delay. Coordinate with relevant stakeholders to close pending items without delay.</div>
+      </div>
+      <div class="esc-card l2">
+        <div class="esc-level-num">Level 2</div>
+        <div class="esc-trigger">SLA Breach</div>
+        <div class="esc-level-title">Functional Escalation</div>
+        <div class="esc-level-body">If not resolved within defined SLA, escalate to the respective function lead (IT Manager, PMO Head, Finance Head, Resource Manager, or Delivery Lead). Provide status, impact, and expected resolution timeline.</div>
+      </div>
+      <div class="esc-card l3">
+        <div class="esc-level-num">Level 3</div>
+        <div class="esc-trigger">Deployment / Billing Risk</div>
+        <div class="esc-level-title">SBU Operations Escalation</div>
+        <div class="esc-level-body">If delays may impact deployment timelines, billing readiness, or compliance, escalate to the SBU Operations Lead for cross-functional intervention and resolution.</div>
+      </div>
+      <div class="esc-card l4">
+        <div class="esc-level-num">Level 4</div>
+        <div class="esc-trigger">Critical Risk</div>
+        <div class="esc-level-title">Management Escalation</div>
+        <div class="esc-level-body">For critical risks or repeated delays, escalate to SBU Leadership for immediate corrective direction and organizational accountability.</div>
+      </div>
+    </div>
+
+    <div class="panel full">
+      <div class="panel-head"><span class="ph-icon">🔧</span><h3>Corrective Actions & Consequences</h3></div>
+      <div class="panel-body">
+        <div class="req-item">
+          <div class="req-num" style="background:#15803D;">✔</div>
+          <div class="req-text"><strong>Immediate Resolution</strong>Complete all pending onboarding requirements without further delay.</div>
+        </div>
+        <div class="req-item">
+          <div class="req-num" style="background:#0369A1;">🔍</div>
+          <div class="req-text"><strong>Root Cause Analysis</strong>Identify root cause and implement corrective action to prevent recurrence.</div>
+        </div>
+        <div class="req-item">
+          <div class="req-num" style="background:#7C3AED;">📚</div>
+          <div class="req-text"><strong>Process Retraining</strong>Provide process clarification or retraining to involved personnel.</div>
+        </div>
+        <div class="req-item">
+          <div class="req-num" style="background:#B45309;">📈</div>
+          <div class="req-text"><strong>Enhanced Monitoring</strong>Apply enhanced monitoring for subsequent onboarding cycles.</div>
+        </div>
+        <div class="req-item">
+          <div class="req-num">⚠️</div>
+          <div class="req-text"><strong>Repeated Non-Compliance</strong>Formal notification to the respective function head. Review of process adherence and performance expectations. Corrective action per organizational policies.</div>
+        </div>
+        <div style="margin-top:16px;padding:14px 18px;background:#F0FDF4;border-radius:8px;border-left:3px solid #15803D;font-size:13.5px;color:#14532D;">
+          <strong>📢 Risk &amp; Impact Communication:</strong> Where delays may impact operational readiness, billing, or compliance, stakeholders shall be informed promptly and mitigation actions initiated to minimize business impact.
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+</div>
+
+<script>
+function show(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  el.classList.add('active');
+  event.preventDefault();
+}
+
+function showRole(id, el) {
+  document.querySelectorAll('.role-content').forEach(r => r.classList.remove('active'));
+  document.querySelectorAll('.role-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('rc-' + id).classList.add('active');
+  el.classList.add('active');
+}
+</script>
+</body>
+</html>
+
+
